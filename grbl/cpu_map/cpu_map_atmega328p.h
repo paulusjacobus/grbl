@@ -61,9 +61,10 @@
 #define LIMIT_PIN        PINB
 #define LIMIT_PORT       PORTB
 #define X_LIMIT_BIT      1  // Uno Digital Pin 9
-#define Y_LIMIT_BIT      2  // Uno Digital Pin 10
+//#define Y_LIMIT_BIT      2  // Uno Digital Pin 10
+#define Y_LIMIT_BIT      3  // Uno Digital Pin 11 (was Digital Pin 10)
 
-#ifdef VARIABLE_SPINDLE // Z Limit pin and spindle enabled swapped to access hardware PWM on Pin 11.  
+#ifdef VARIABLE_SPINDLE // Z Limit pin and spindle enabled swapped to access hardware PWM on Pin 11 and 10.  
   #define Z_LIMIT_BIT	   4 // Uno Digital Pin 12
 #else
   #define Z_LIMIT_BIT    3  // Uno Digital Pin 11
@@ -149,5 +150,5 @@
   #define SPINDLE_PWM_DDR	  DDRB
   #define SPINDLE_PWM_PORT  PORTB
   //#define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
-  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 10
+  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 10 (swap Digital pins 10 and 11)
 #endif // End of VARIABLE_SPINDLE
