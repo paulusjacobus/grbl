@@ -90,9 +90,13 @@ void spindle_set_state(uint8_t state, float rpm)
         OCR4A = 0xFFFF; // set the top 16bit value
         uint16_t current_pwm;
       #else
+        //TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+        //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
+        //uint8_t current_pwm;
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
-        uint8_t current_pwm;
+        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
+        OCR1A = 0xFFFF; // set the top 16bit value
+        uint16_t current_pwm;
       #endif
 
       if (rpm <= 0.0) { spindle_stop(); } // RPM should never be negative, but check anyway.
