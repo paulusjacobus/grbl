@@ -62,6 +62,7 @@
 #define LIMIT_PORT       PORTB
 #define X_LIMIT_BIT      1  // Uno Digital Pin 9
 #define Y_LIMIT_BIT      2  // Uno Digital Pin 10
+
 #ifdef VARIABLE_SPINDLE // Z Limit pin and spindle enabled swapped to access hardware PWM on Pin 11.  
   #define Z_LIMIT_BIT	   4 // Uno Digital Pin 12
 #else
@@ -129,12 +130,16 @@
 // Start of PWM & Stepper Enabled Spindle
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
-  #define PWM_MAX_VALUE    255.0
-  #define TCCRA_REGISTER	 TCCR2A
-  #define TCCRB_REGISTER	 TCCR2B
-  #define OCR_REGISTER     OCR2A
+ // #define PWM_MAX_VALUE    255.0
+ // #define TCCRA_REGISTER	 TCCR2A
+//  #define TCCRB_REGISTER	 TCCR2B
+//  #define OCR_REGISTER     OCR2A
+  #define PWM_MAX_VALUE    1023.0
+  #define TCCRA_REGISTER	 TCCR1A
+  #define TCCRB_REGISTER	 TCCR1B
+  #define OCR_REGISTER     OCR1A
   
-  #define COMB_BIT	     COM2A1
+  #define COMB_BIT	     COM1A1
   #define WAVE0_REGISTER	 WGM20
   #define WAVE1_REGISTER	 WGM21
   #define WAVE2_REGISTER	 WGM22
@@ -143,5 +148,6 @@
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
   #define SPINDLE_PWM_DDR	  DDRB
   #define SPINDLE_PWM_PORT  PORTB
-  #define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
+  //#define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
+  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 10
 #endif // End of VARIABLE_SPINDLE
