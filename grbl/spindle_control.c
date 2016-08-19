@@ -93,6 +93,14 @@ void spindle_set_state(uint8_t state, float rpm)
         //TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
         //uint8_t current_pwm;
+//Setting 	Divisor 	Frequency
+//0x01 	 	1 	 	31372.55 
+//0x02 	 	8 	 	3921.16 <-- selected
+//0x03  	64 	 	490.20 
+//0x04  	256 	122.55
+//0x05 	 	1024 	30.64
+
+//TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
         OCR1A = 0xFFFF; // set the top 16bit value
