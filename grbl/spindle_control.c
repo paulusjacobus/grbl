@@ -107,6 +107,8 @@ void spindle_set_state(uint8_t state, float rpm)
 //Ph fr cor 1, 0, 0, 1, OCR1A
 // 10bit cr 1, 1, 0, 0, 0x03FF (change code to use fix value here)
 
+// Fast PWM COM2B=0x02 non invert PWM, COM2B = 0x03 invert PWM (0, 1 disconnect B ports)
+
 //TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
