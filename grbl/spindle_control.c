@@ -93,12 +93,19 @@ void spindle_set_state(uint8_t state, float rpm)
         //TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
         //uint8_t current_pwm;
+// configuration of the PWM registers
 //Setting 	Divisor 	Frequency
 //0x01 	 	1 	 	31372.55 
-//0x02 	 	8 	 	3921.16 <-- selected
+//0x02 	 	8 	 	3921.16 
 //0x03  	64 	 	490.20 
 //0x04  	256 	122.55
 //0x05 	 	1024 	30.64
+
+// Mode WGM 0, 1, 2, 3, Top
+// Fast PWM 1, 1, 1, 1, OCR1A <--- selected
+// Phs corr 1, 1, 0, 1, OCR1A
+//Ph fr cor 1, 0, 0, 1, OCR1A
+// 10bit cr 1, 1, 0, 0, 0x03FF (change code to use fix value here)
 
 //TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
