@@ -25,6 +25,13 @@
 
 // IMPORTANT: Any changes here requires a full re-compiling of the source code to propagate them.
 
+// K40 drop in controller modifications
+// Swapped Timer1 and 2 in order to get 16 bits PWM rather than 8 bits PWM
+// Digital Pins - Timer
+// 5,6          - Timer0 used for stepper ISR
+// 9,10         - Timer1 used for Spindle PWM was stepper ISR
+// 3,11         - Timer2 used for stepper ISR was spindle PWM
+
 #ifndef config_h
 #define config_h
 #include "grbl.h" // For Arduino IDE compatibility.
