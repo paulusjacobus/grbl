@@ -139,7 +139,7 @@
   #define PWM_MAX_VALUE    1023.0
   #define TCCRA_REGISTER	 TCCR1A
   #define TCCRB_REGISTER	 TCCR1B
-  #define OCR_REGISTER     OCR1A
+  #define OCR_REGISTER     OCR1B
   
 //  #define COMB_BIT	     COM1A1 <-- COM2A1
 //  #define WAVE0_REGISTER	 WGM20
@@ -147,7 +147,7 @@
 //  #define WAVE2_REGISTER	 WGM22
 //  #define WAVE3_REGISTER	 WGM23
   //K40 conversion
-  #define COMB_BIT	     COM1A1
+  #define COMB_BIT	     COM1B1 //uses Port B dig pin 10 port A is dig pin 9
   #define WAVE0_REGISTER	 WGM10
   #define WAVE1_REGISTER	 WGM11
   #define WAVE2_REGISTER	 WGM12
