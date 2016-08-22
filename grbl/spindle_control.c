@@ -86,7 +86,7 @@ void spindle_set_state(uint8_t state, float rpm)
       // TODO: Install the optional capability for frequency-based output for servos.
       #ifdef CPU_MAP_ATMEGA2560
       	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
+        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
         OCR4A = 0xFFFF; // set the top 16bit value
         uint16_t current_pwm;
       #else
@@ -102,15 +102,15 @@ void spindle_set_state(uint8_t state, float rpm)
 //0x05 	 	1024 	30.64
 
 // Mode WGM 0, 1, 2, 3, Top
-// Fast PWM 1, 1, 1, 1, OCR1A <--- selected
+// Fast PWM 1, 1, 1, 1, OCR1A <-- selected
 // Phs corr 1, 1, 0, 1, OCR1A
 //Ph fr cor 1, 0, 0, 1, OCR1A
 // 10bit cr 1, 1, 0, 0, 0x03FF (change code to use fix value here)
 
-// Fast PWM COM2B=0x02 non invert PWM, COM2B = 0x03 invert PWM (0, 1 disconnect B ports!)
+// Fast PWM COM1B=0x02 non invert PWM, COM1B = 0x03 invert PWM (0, 1 disconnect B ports!)
 // OCR1A drives PWM on Digital Pin 9 & OCR1B drives PWM on Digital Pin 10
 //TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
-        TCCRA_REGISTER = (1<<COMB_BIT) | (0<<WAVE1_REGISTER) | (0<<WAVE0_REGISTER);
+        TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
         OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions
         uint16_t current_pwm;
