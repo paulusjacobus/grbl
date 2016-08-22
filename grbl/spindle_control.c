@@ -112,7 +112,8 @@ void spindle_set_state(uint8_t state, float rpm)
 //TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) | (1<<WAVE3_REGISTER); // set to 1/8 Prescaler
-        OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions
+        OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions. OCR1A or ICR1 can be used a Top value
+        // OCR1A is overwritten by the spindle value from CNC sender command i.e. 'S100'
         uint16_t current_pwm;
       #endif
 
