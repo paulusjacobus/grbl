@@ -498,13 +498,13 @@ void stepper_init()
   //TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
   
   // *** Swap timer 1 with 2 *** compare interrupt operation
-  TCCR2B &= ~((1<<WGM22 | (1<<CS21)| (1<<CS20)); // waveform generation = 010 = CTC Mode
-  TCCR2B |= (1<<CS22); //  CTC mode and CS21 prescaler 1/8
+  TCCR2B &= ~((1<<WGM22)|(1<<CS21)| (1<<CS20)); // waveform generation = 010 = CTC Mode
+  TCCR2B |=   (1<<CS22); //  CTC mode and CS22 prescaler 1/64
   // CS22 - CS21 - CS20
   // 0 - 0 - 1 = no prescaling
   // 0 - 1 - 0 = 1/8
   // 0 - 1 - 1 = 1/32
-  // 1 - 0 - 0 = 1/64 <-
+  // 1 - 0 - 0 = 1/64 <-default prescaler
   // 1 - 0 - 1 = 1/128
   // 1 - 1 - 0 = 1/256
   // 1 - 1 - 1 = 1/1024
@@ -512,7 +512,7 @@ void stepper_init()
   // In Clear Timer on Compare or CTC mode (WGM22:0 = 2), 
   //the OCR2A Register is used to manipulate the counter resolution.
   //In CTC mode the counter is cleared to zero when the counter value (TCNT2-uses OCR2A value) matches the OCR2A. 
-  TCCR2A &= ~((1<<WGM20 | 1<<COM2A1) | (1<<COM2A0) | (1<<COM2B1) | (1<<COM2B0)); // Normal port operation, OC2A/OC2B disconnected  
+  TCCR2A &= ~((1<<WGM20) |(1<<COM2A1) | (1<<COM2A0) | (1<<COM2B1) | (1<<COM2B0)); // Normal port operation, OC2A/OC2B disconnected  
   // *** end of the swap ***
   
   // Original code left commented here below - no change!
