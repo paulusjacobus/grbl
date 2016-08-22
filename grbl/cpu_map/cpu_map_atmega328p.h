@@ -80,11 +80,12 @@
 #define SPINDLE_ENABLE_PORT   PORTB
 // Z Limit pin and spindle PWM/enable pin swapped to access hardware PWM on Pin 11.
 #ifdef VARIABLE_SPINDLE 
-  #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
-    // If enabled, spindle direction pin now used as spindle enable, while PWM remains on D11.
+  #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN //Not used in K40
+    // If enabled, spindle direction pin now used as spindle enable, while PWM remains on D11/D10.
     #define SPINDLE_ENABLE_BIT    5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
   #else
-    #define SPINDLE_ENABLE_BIT    3  // Uno Digital Pin 11
+    //#define SPINDLE_ENABLE_BIT    3  // Uno Digital Pin 11
+    #define SPINDLE_ENABLE_BIT    2  // Uno Digital Pin 10
   #endif
 #else
   #define SPINDLE_ENABLE_BIT    4  // Uno Digital Pin 12
