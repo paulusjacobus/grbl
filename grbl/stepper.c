@@ -303,7 +303,7 @@ ISR(TIMER2_COMPA_vect)
   #endif  
 
   // Enable step pulse reset timer so that The Stepper Port Reset Interrupt can reset the signal after
-  // exactly settings.pulse_microseconds microseconds, independent of the main Timer1 prescaler.
+  // exactly settings.pulse_microseconds microseconds, independent of the main Timer2 prescaler.
   TCNT0 = st.step_pulse_time; // Reload Timer0 counter
   TCCR0B = (1<<CS01); // Begin Timer0. Full speed, 1/8 prescaler
 
@@ -322,7 +322,7 @@ ISR(TIMER2_COMPA_vect)
         // With AMASS is disabled, set timer prescaler for segments with slow step frequencies (< 250Hz).
         //TCCR1B = (TCCR1B & ~(0x07<<CS10)) | (st.exec_segment->prescaler<<CS10);
         // **** Timer 1 swap with Timer2
-        TCCR2B = (TCCR2B & ~(0x07<<CS20)) | (st.exec_segment->prescaler<<CS20);
+        TCCR2B = (TCCR2B & ~(0x07<<CS20)) | (st.exec_segment->prescaler<<CS20);//here we load the cs20,21,22 prescaler values
         // ***
       #endif
 
@@ -498,16 +498,7 @@ void stepper_init()
   //TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
   
   // *** Swap timer 1 with 2 *** compare interrupt operation
-  TCCR2B &= ~((1<<WGM22)|(1<<CS21)| (1<<CS22)); // waveform generation = 010 = CTC Mode
-  TCCR2B |=   (1<<CS20); //  CTC mode and CS20 prescaler 1/1
-  // CS22 - CS21 - CS20
-  // 0 - 0 - 1 = no prescaling
-  // 0 - 1 - 0 = 1/8
-  // 0 - 1 - 1 = 1/32
-  // 1 - 0 - 0 = 1/64 <-default prescaler
-  // 1 - 0 - 1 = 1/128
-  // 1 - 1 - 0 = 1/256
-  // 1 - 1 - 1 = 1/1024
+  TCCR2B &= ~((1<<WGM22)); // waveform generation = 010 = CTC Mode
   TCCR2A |= (1<<WGM21); // WGM22,21,20=010 = CTC Mode
   // In Clear Timer on Compare or CTC mode (WGM22:0 = 2), 
   //the OCR2A Register is used to manipulate the counter resolution.
