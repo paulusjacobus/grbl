@@ -203,8 +203,8 @@ void st_wake_up()
     #endif
 
     // Enable Stepper Driver Interrupt
-    //TIMSK1 |= (1<<OCIE1A); swap Timer 1 with Timer 2
-    TIMSK2 |= (1<<OCIE2A);//Timer2 runs in compare mode ISR (Timer2 compa vector)
+    //TIMSK1 |= (1<<OCIE1A); swap Timer 1 with Timer 4 (or 3 if needed) you cannot use Timer2 because its a 8 bits timer
+    TIMSK4 |= (1<<OCIE4A);//Timer4 runs in compare mode ISR (Timer4 compa vector)
   }
 }
 
@@ -216,8 +216,8 @@ void st_go_idle()
 //  TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
 //  TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
 // *** swap timer 1 with 2 ***
-  TIMSK2 &= ~(1<<OCIE2A); // Disable Timer2 interrupt
-  TCCR2B = (TCCR1B & ~((1<<CS22) | (1<<CS21))) | (1<<CS20); // Reset clock to no prescaling.
+  TIMSK4 &= ~(1<<OCIE4A); // Disable Timer2 interrupt
+  TCCR4B = (TCCR4B & ~((1<<CS42) | (1<<CS41))) | (1<<CS40); // Reset clock to no prescaling.
 // ***
   busy = false;
   
@@ -285,8 +285,8 @@ void st_go_idle()
 // with probing and homing cycles that require true real-time positions.
 
 //ISR(TIMER1_COMPA_vect)
-// *** Swap timer 1 with 2
-ISR(TIMER2_COMPA_vect)
+// *** Swap timer 1 with 4
+ISR(TIMER4_COMPA_vect)
 //***
 {        
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
@@ -321,15 +321,15 @@ ISR(TIMER2_COMPA_vect)
       #ifndef ADAPTIVE_MULTI_AXIS_STEP_SMOOTHING
         // With AMASS is disabled, set timer prescaler for segments with slow step frequencies (< 250Hz).
         //TCCR1B = (TCCR1B & ~(0x07<<CS10)) | (st.exec_segment->prescaler<<CS10);
-        // **** Timer 1 swap with Timer2
-        TCCR2B = (TCCR2B & ~(0x07<<CS20)) | (st.exec_segment->prescaler<<CS20);//here we load the cs20,21,22 prescaler values
+        // **** Timer 1 swap with Timer4
+        TCCR4B = (TCCR4B & ~(0x07<<CS40)) | (st.exec_segment->prescaler<<CS40);//here we load the cs20,21,22 prescaler values
         // ***
       #endif
 
       // Initialize step segment timing per step and load number of steps to execute.
       //OCR1A = st.exec_segment->cycles_per_tick; 
-      //*** Timer 1 swap Timer2
-      OCR2A = st.exec_segment->cycles_per_tick;//here we fill the steps in timer2 compare register
+      //*** Timer 1 swap Timer4
+      OCR4A = st.exec_segment->cycles_per_tick;//here we fill the steps in timer2 compare register
       // ***
       st.step_count = st.exec_segment->n_step; // NOTE: Can sometimes be zero when moving slow.
       // If the new segment starts a new planner block, initialize stepper variables and counters.
@@ -498,12 +498,14 @@ void stepper_init()
   //TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
   
   // *** Swap timer 1 with 2 *** compare interrupt operation
-  TCCR2B &= ~((1<<WGM22)); // waveform generation = 010 = CTC Mode
-  TCCR2A |= (1<<WGM21); // WGM22,21,20=010 = CTC Mode
-  // In Clear Timer on Compare or CTC mode (WGM22:0 = 2), 
-  //the OCR2A Register is used to manipulate the counter resolution.
-  //In CTC mode the counter is cleared to zero when the counter value (TCNT2-uses OCR2A value) matches the OCR2A. 
-  TCCR2A &= ~((1<<WGM20) |(1<<COM2A1) | (1<<COM2A0) | (1<<COM2B1) | (1<<COM2B0)); // Normal port operation, OC2A/OC2B disconnected  
+  TCCR4B &= ~(1<<WGM43); // waveform generation = 0100 = CTC
+  TCCR4B |=  (1<<WGM42);
+  TCCR4A &= ~((1<<WGM41) | (1<<WGM40)); 
+  TCCR4A &= ~((1<<COM4A1) | (1<<COM4A0) | (1<<COM4B1) | (1<<COM4B0)); // Disconnect OC1 output
+  // In Clear Timer on Compare or CTC mode, 
+  //the OCR4A Register is used to manipulate the counter resolution.
+  //In CTC mode the counter is cleared to zero when the counter value (TCNT4-uses OCR4A value) matches the OCR4A. 
+ // Normal port operation, OC4A/OC4B disconnected  
   // *** end of the swap ***
   
   // Original code left commented here below - no change!
