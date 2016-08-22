@@ -139,15 +139,10 @@
   #define PWM_MAX_VALUE    1023.0
   #define TCCRA_REGISTER	 TCCR1A
   #define TCCRB_REGISTER	 TCCR1B
-  #define OCR_REGISTER     OCR1B
+  #define OCR_REGISTER     OCR1B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
-//  #define COMB_BIT	     COM1A1 <-- COM2A1
-//  #define WAVE0_REGISTER	 WGM20
-//  #define WAVE1_REGISTER	 WGM21
-//  #define WAVE2_REGISTER	 WGM22
-//  #define WAVE3_REGISTER	 WGM23
-  //K40 conversion
-  #define COMB_BIT	     COM1B1 //uses Port B dig pin 10 port A is dig pin 9
+  //Timer 2 to 1 conversion. COM1A1 was set for Dig Pin 11 Channel A
+  #define COMB_BIT	     COM1B1 //uses channel B dig pin 10 while channel A is dig pin 9
   #define WAVE0_REGISTER	 WGM10
   #define WAVE1_REGISTER	 WGM11
   #define WAVE2_REGISTER	 WGM12
