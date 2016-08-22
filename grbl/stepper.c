@@ -498,8 +498,8 @@ void stepper_init()
   //TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
   
   // *** Swap timer 1 with 2 *** compare interrupt operation
-  TCCR2B &= ~((1<<WGM22)|(1<<CS21)| (1<<CS20)); // waveform generation = 010 = CTC Mode
-  TCCR2B |=   (1<<CS22); //  CTC mode and CS22 prescaler 1/64
+  TCCR2B &= ~((1<<WGM22)|(1<<CS21)| (1<<CS22)); // waveform generation = 010 = CTC Mode
+  TCCR2B |=   (1<<CS20); //  CTC mode and CS20 prescaler 1/1
   // CS22 - CS21 - CS20
   // 0 - 0 - 1 = no prescaling
   // 0 - 1 - 0 = 1/8
