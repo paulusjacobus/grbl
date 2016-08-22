@@ -109,9 +109,10 @@ void spindle_set_state(uint8_t state, float rpm)
 
 // Fast PWM COM1B=0x02 non invert PWM, COM1B = 0x03 invert PWM (0, 1 disconnect B ports!)
 // OCR1A drives PWM on Digital Pin 9 & OCR1B drives PWM on Digital Pin 10
-//TCCR1B = (TCCR1B & 0b11111000) | <setting>;        
-        TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WGM21) | (1<<WGM20);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11110000) | 0x02 | (1<<WGM22); // set to 1/8 Prescaler
+//TCCR1B = (TCCR1B & 0b11111000) | <setting>;    
+        // TCCR1A = bit (WGM10) | bit (WGM11) | bit (COM1B1);
+        TCCR1A = (1<<COM1B1| (1<<WGM11) | (1<<WGM10);
+        TCCR1B = (TCCR1B & 0b11110000) | 0x02 | (1<<WGM12) | (1<<WGM13); // set to 1/8 Prescaler
         OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions. OCR1A or ICR1 can be used a Top value
         // OCR1A is overwritten by the spindle value from CNC sender command i.e. 'S100'
         OCR1B = 0; // bottom value
