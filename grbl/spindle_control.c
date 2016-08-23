@@ -115,7 +115,7 @@ void spindle_set_state(uint8_t state, float rpm)
         TCCR1B = (TCCR1B & 0b11110000) | 0x02 | (1<<WGM12) | (1<<WGM13); // set to 1/8 Prescaler
         OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions. OCR1A or ICR1 can be used a Top value
         // OCR1A is overwritten by the spindle value from CNC sender command i.e. 'S100'
-        OCR1B = 0; // bottom value
+        //OCR1B = 0; // bottom value
         TIMSK1=0;
         uint16_t current_pwm;
       #endif
