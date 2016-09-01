@@ -87,7 +87,7 @@ void spindle_set_state(uint8_t state, float rpm)
       #ifdef CPU_MAP_ATMEGA2560
       	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
-        OCR4A = 0xFFFF; // set the top 16bit value
+        OCR4A = 0xFFFF; // set the top 16bit value in PWM generator
         uint16_t current_pwm;
       #endif
       
@@ -97,8 +97,14 @@ void spindle_set_state(uint8_t state, float rpm)
         TCCR4C = (TCCR4C & 0b00001111) | 0xA0 |;//COM4A and B shadow registers
         TCCR4D = (TCCR4D & 0b11111100) | 0x00 |;// WGM41 and WGM40 FastPWM
         TCCR4E = (TCCR4E & 0b10111111) | 0x40 |;// Bit6 enhance PWM 11 bits
-        OCR4C = 0x3FFF; // set the topvalue 11bit value
+        OCR4C = 0x3FFF; // set the topvalue 11bit value in PWM generator
         uint16_t current_pwm;       
+       #endif
+       #ifdef CPU_MAP_ATMEGA328PB //uno plus
+     	  TCCR4A = (TCCR4A & 0b11001100) | 0x20 |;//set Fast PWM4B=1 OCR4B Output
+        TCCR4B = (TCCR4B & 0b11100000) | 0x0a |;// set to 1/8 Prescaler  
+        OCR4A = 0x1FFF;
+        uint16_t current_pwm; 
        #else
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
