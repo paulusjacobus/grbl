@@ -90,7 +90,7 @@ void spindle_set_state(uint8_t state, float rpm)
         OCR4A = 0xFFFF; // set the top 16bit value
         uint16_t current_pwm;
       #else
-       #ifdef CPU_MAP_ATMEGA32U4
+       #ifdef CPU_MAP_ATMEGA32U4 //Leonardo
       	TCCR4A = (TCCR4A & 0b11001110) | 0x21 |;//set Fast PWM4B=1 OCR4B Output
         TCCR4B = (TCCR4B & 0b11110000) | 0x04 |;// set to 1/8 Prescaler
         TCCR4C = (TCCR4C & 0b00001111) | 0xA0 |;//COM4A and B shadow registers
@@ -99,34 +99,9 @@ void spindle_set_state(uint8_t state, float rpm)
         OCR4C = 0x3FFF; // set the topvalue 11bit value
         uint16_t current_pwm;       
        #else
-        //TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
-        //uint8_t current_pwm;
-// configuration of the PWM registers
-//Setting 	Divisor 	Frequency
-//0x01 	 	1 	 	31372.55 
-//0x02 	 	8 	 	3921.16 
-//0x03  	64 	 	490.20 
-//0x04  	256 	122.55
-//0x05 	 	1024 	30.64
-
-// Mode WGM 0, 1, 2, 3, Top
-// Fast PWM 1, 1, 1, 1, OCR1A <-- selected
-// Phs corr 1, 1, 0, 1, OCR1A
-//Ph fr cor 1, 0, 0, 1, OCR1A
-// 10bit cr 1, 1, 0, 0, 0x03FF (change code to use fix value here)
-
-// Fast PWM COM1B=0x02 non invert PWM, COM1B = 0x03 invert PWM (0, 1 disconnect B ports!)
-// OCR1A drives PWM on Digital Pin 9 & OCR1B drives PWM on Digital Pin 10
-//TCCR1B = (TCCR1B & 0b11111000) | <setting>;    
-        // TCCR1A = bit (WGM10) | bit (WGM11) | bit (COM1B1);
-        TCCR1A = (1<<COM1B1| (1<<WGM11) | (1<<WGM10);
-        TCCR1B = (TCCR1B & 0b11110000) | 0x02 | (1<<WGM12) | (1<<WGM13); // set to 1/8 Prescaler
-        OCR1A = 0x03FF; // set the top 16bit value x0FFF for 12 bits 4096 positions. OCR1A or ICR1 can be used a Top value
-        // OCR1A is overwritten by the spindle value from CNC sender command i.e. 'S100'
-        //OCR1B = 0; // bottom value
-        TIMSK1=0;
-        uint16_t current_pwm;
+        TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
+        uint8_t current_pwm;
       #endif
 
       if (rpm <= 0.0) { spindle_stop(); } // RPM should never be negative, but check anyway.
