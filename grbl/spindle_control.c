@@ -89,8 +89,9 @@ void spindle_set_state(uint8_t state, float rpm)
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
         OCR4A = 0xFFFF; // set the top 16bit value
         uint16_t current_pwm;
-      #else
-       #ifdef CPU_MAP_ATMEGA32U4 //Leonardo
+      #endif
+      
+      #ifdef CPU_MAP_ATMEGA32U4 //Leonardo
       	TCCR4A = (TCCR4A & 0b11001110) | 0x21 |;//set Fast PWM4B=1 OCR4B Output
         TCCR4B = (TCCR4B & 0b11110000) | 0x04 |;// set to 1/8 Prescaler
         TCCR4C = (TCCR4C & 0b00001111) | 0xA0 |;//COM4A and B shadow registers
