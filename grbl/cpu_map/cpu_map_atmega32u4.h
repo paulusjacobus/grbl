@@ -16,7 +16,7 @@
 
 /* Grbl officially supports the Arduino Uno, but the other supplied pin mappings are
    supplied by users, so your results may vary. This cpu_map file serves as a central
-   pin mapping settings file for AVR 328p used on the Arduino Uno.  */
+   pin mapping settings file for AVR 32U4 used on the Arduino Leonardo.  */
    
 #ifdef GRBL_PLATFORM
 #error "cpu_map already defined: GRBL_PLATFORM=" GRBL_PLATFORM
