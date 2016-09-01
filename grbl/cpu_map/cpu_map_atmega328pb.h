@@ -3,6 +3,7 @@
   Part of Grbl
 
   Copyright (c) 2012-2015 Sungeun K. Jeon
+  Pin Maps 328PB Copyright (c) 2016  Paul de Groot
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
 
 /* Grbl officially supports the Arduino Uno, but the other supplied pin mappings are
    supplied by users, so your results may vary. This cpu_map file serves as a central
-   pin mapping settings file for AVR 328p used on the Arduino Uno.  */
+   pin mapping settings file for AVR 328pb which is not used on the Arduino boards but can be dropped into the Uno.  */
    
 #ifdef GRBL_PLATFORM
 #error "cpu_map already defined: GRBL_PLATFORM=" GRBL_PLATFORM
@@ -139,7 +140,7 @@
   #define TCCRB_REGISTER	 TCCR4B
   #define OCR_REGISTER     OCR4B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
-  //Timer 2 to 1 conversion. COM1A1 was set for Dig Pin 11 Channel A
+  //Timer 2 to timer 4 conversion. COM1A1 was set for Dig Pin 11 Channel A
   #define COMB_BIT	     COM4B1 //uses channel B dig pin 10 while channel A is dig pin 9
   #define WAVE0_REGISTER	 WGM40
   #define WAVE1_REGISTER	 WGM41
