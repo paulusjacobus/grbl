@@ -132,7 +132,7 @@
   #define PWM_MAX_VALUE    1023.0
   #define TCCRA_REGISTER	 TCCR4A
   #define TCCRB_REGISTER	 TCCR4B
-  #define OCR_REGISTER     OCR4C
+  #define OCR_REGISTER     OCR4B // Output PWM timer 4 on the B port
 
   
   //Timer 2 to 1 conversion. COM1A1 was set for Dig Pin 11 Channel A
