@@ -137,10 +137,10 @@
   #define PWM_MAX_VALUE    1023.0 //10 bits 1023,2047,4095,8191,16383,32767,65535=16bits
   #define TCCRA_REGISTER	 TCCR1A
   #define TCCRB_REGISTER	 TCCR1B
-  #define OCR_REGISTER     OCR1B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
+  #define OCR_REGISTER     OCR1A 
   
 
-  #define COMB_BIT	     COM1B1 //uses channel B dig pin 10 while channel A is dig pin 9
+  #define COMB_BIT	     COM1A1 
   #define WAVE0_REGISTER	 WGM10
   #define WAVE1_REGISTER	 WGM11
   #define WAVE2_REGISTER	 WGM12
