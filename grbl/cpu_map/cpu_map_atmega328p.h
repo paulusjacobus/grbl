@@ -27,7 +27,7 @@
 #endif
 
 
-#define GRBL_PLATFORM "Atmega328p"
+#define GRBL_PLATFORM "Atmega328pb"
 
 // Define serial port pins and interrupt vectors.
 #define SERIAL_RX     USART_RX_vect
@@ -133,21 +133,18 @@
 // Start of PWM & Stepper Enabled Spindle
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
- // #define PWM_MAX_VALUE    255.0
- // #define TCCRA_REGISTER	 TCCR2A
-//  #define TCCRB_REGISTER	 TCCR2B
-//  #define OCR_REGISTER     OCR2A
-  #define PWM_MAX_VALUE    1023.0 //10 bits 1023,2047,4095,8191,16383,32767,65535=16bits
-  #define TCCRA_REGISTER	 TCCR1A
-  #define TCCRB_REGISTER	 TCCR1B
-  #define OCR_REGISTER     OCR1B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
+
+  #define PWM_MAX_VALUE    4095.0 //10 bits 1023,2047,4095,8191,16383,32767,65535=16bits
+  #define TCCRA_REGISTER	 TCCR4A
+  #define TCCRB_REGISTER	 TCCR4B
+  #define OCR_REGISTER     OCR4B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
-  //Timer 2 to 1 conversion. COM1A1 was set for Dig Pin 11 Channel A
-  #define COMB_BIT	     COM1B1 //uses channel B dig pin 10 while channel A is dig pin 9
-  #define WAVE0_REGISTER	 WGM10
-  #define WAVE1_REGISTER	 WGM11
-  #define WAVE2_REGISTER	 WGM12
-  #define WAVE3_REGISTER	 WGM13
+
+  #define COMB_BIT	     COM4B1 //uses channel B dig pin 10 while channel A is dig pin 9
+  #define WAVE0_REGISTER	 WGM40
+  #define WAVE1_REGISTER	 WGM41
+  #define WAVE2_REGISTER	 WGM42
+  #define WAVE3_REGISTER	 WGM43
       
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
   #define SPINDLE_PWM_DDR	  DDRB
