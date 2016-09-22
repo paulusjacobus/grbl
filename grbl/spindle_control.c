@@ -92,17 +92,13 @@ void spindle_set_state(uint8_t state, float rpm)
       #endif
       
       #ifdef CPU_MAP_ATMEGA32U4 //Leonardo
-      // 04B digital pin D10
-      	TCCR4A = (TCCR4A & 0b11001110) | 0x21 |;//set Fast PWM4B=1 OCR4B Output
-        TCCR4B = (TCCR4B & 0b11110000) | 0x04 |;// set to 1/8 Prescaler
-        TCCR4C = (TCCR4C & 0b00001111) | 0xA0 |;//COM4A and B shadow registers
+      // 0C4A digital pin D13
+      	TCCR4A = (TCCR4A & 0b00111101) | 0xC2 |;//set Fast PWM4B=1 OCR4B Output
+        TCCR4B = (TCCR4B & 0b11110000) | 0x34 |;// set to 1/8 Prescaler
+        TCCR4C = (TCCR4C & 0b00001111) | 0xC0 |;//COM4A and B shadow registers
         TCCR4D = (TCCR4D & 0b11111100) | 0x00 |;// WGM41 and WGM40 FastPWM
         TCCR4E = (TCCR4E & 0b10111111) | 0x40 |;// Bit6 enhance PWM 11 bits
-        OCR4C = 0x3FFF; // set the topvalue 11bit value in PWM generator
-       //03A digital Pin 5
-       // TCCR3A = (TCCR3A & 0b00111100) | 0x83 ; //fast pwm timer 3
-      //  TCCR3B = (TCCR3b & 0b11100000) | 0x1A ; // Fast pwm 1/8 prescaler
-      //  OCR3A = 0x3FFF; // 11 bit resolution top value
+        OCR4C = 0x3FFF; // set the topvalue 11bit value in PWM generator. OCR4C is top register
         uint16_t current_pwm;       
        #endif
        #ifdef CPU_MAP_ATMEGA328PB //uno plus
