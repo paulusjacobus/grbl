@@ -95,20 +95,20 @@
 // Define flood and mist coolant enable output pins.
 // NOTE: Uno analog pins 4 and 5 are reserved for an i2c interface, and may be installed at
 // a later date if flash and memory space allows.
-#define COOLANT_FLOOD_DDR   DDRC
-#define COOLANT_FLOOD_PORT  PORTC
+#define COOLANT_FLOOD_DDR   DDRF
+#define COOLANT_FLOOD_PORT  PORTF
 #define COOLANT_FLOOD_BIT   3  // Uno Analog Pin 3
 #ifdef ENABLE_M7 // Mist coolant disabled by default. See config.h to enable/disable.
-  #define COOLANT_MIST_DDR   DDRC
-  #define COOLANT_MIST_PORT  PORTC
+  #define COOLANT_MIST_DDR   DDRF
+  #define COOLANT_MIST_PORT  PORTF
   #define COOLANT_MIST_BIT   4 // Uno Analog Pin 4
 #endif  
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
 // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).
-#define CONTROL_DDR       DDRC
-#define CONTROL_PIN       PINC
-#define CONTROL_PORT      PORTC
+#define CONTROL_DDR       DDRF
+#define CONTROL_PIN       PINF
+#define CONTROL_PORT      PORTF
 #define RESET_BIT         0  // Uno Analog Pin 0
 #define FEED_HOLD_BIT     1  // Uno Analog Pin 1
 #define CYCLE_START_BIT   2  // Uno Analog Pin 2
@@ -145,8 +145,8 @@
 
       
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
-  #define SPINDLE_PWM_DDR	  DDRB
-  #define SPINDLE_PWM_PORT  PORTA
+  #define SPINDLE_PWM_DDR	  DDRC
+  #define SPINDLE_PWM_PORT  PORTC
   // K40 conversion
   #define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
 #endif // End of VARIABLE_SPINDLE
