@@ -45,7 +45,9 @@
 
 // Default cpu mappings. Grbl officially supports the Arduino Uno only. Other processor types
 // may exist from user-supplied templates or directly user-defined in cpu_map.h
-#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+//#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+
+#define CPU_MAP_ATMEGA328PB // Arduino Uno CPU 328PB
 
 // Define realtime command special characters. These characters are 'picked-off' directly from the
 // serial read data stream and are not passed to the grbl line execution parser. Select characters
@@ -414,6 +416,9 @@
   #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with a 328p processor"
 #endif
 
+#if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) && !defined(CPU_MAP_ATMEGA328PB)
+  #error "USE_SPINDLE_DIR_AS_ENABLE_PIN may only be used with a 328pb processor"
+#endif
 // ---------------------------------------------------------------------------------------
 
 
