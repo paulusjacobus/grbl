@@ -203,8 +203,8 @@ void st_wake_up()
     #endif
 
     // Enable Stepper Driver Interrupt
-    //TIMSK1 |= (1<<OCIE1A); swap Timer 1 with Timer 4 (or 3 if needed) you cannot use Timer2 because its a 8 bits timer
-    TIMSK4 |= (1<<OCIE4A);//Timer4 runs in compare mode ISR (Timer4 compa vector)
+    TIMSK1 |= (1<<OCIE1A); 
+   
   }
 }
 
@@ -213,12 +213,9 @@ void st_wake_up()
 void st_go_idle() 
 {
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
-//  TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
-//  TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
-// *** swap timer 1 with 2 ***
-  TIMSK4 &= ~(1<<OCIE4A); // Disable Timer2 interrupt
-  TCCR4B = (TCCR4B & ~((1<<CS42) | (1<<CS41))) | (1<<CS40); // Reset clock to no prescaling.
-// ***
+  TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
+  TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
+
   busy = false;
   
   // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
@@ -284,10 +281,8 @@ void st_go_idle()
 // int8 variables and update position counters only when a segment completes. This can get complicated 
 // with probing and homing cycles that require true real-time positions.
 
-//ISR(TIMER1_COMPA_vect)
-// *** Swap timer 1 with 4
-ISR(TIMER4_COMPA_vect)
-//***
+ISR(TIMER1_COMPA_vect)
+
 {        
 // SPINDLE_ENABLE_PORT ^= 1<<SPINDLE_ENABLE_BIT; // Debug: Used to time ISR
   if (busy) { return; } // The busy-flag is used to avoid reentering this interrupt
@@ -327,10 +322,8 @@ ISR(TIMER4_COMPA_vect)
       #endif
 
       // Initialize step segment timing per step and load number of steps to execute.
-      //OCR1A = st.exec_segment->cycles_per_tick; 
-      //*** Timer 1 swap Timer4
-      OCR4A = st.exec_segment->cycles_per_tick;//here we fill the steps in timer2 compare register
-      // ***
+      OCR1A = st.exec_segment->cycles_per_tick; 
+
       st.step_count = st.exec_segment->n_step; // NOTE: Can sometimes be zero when moving slow.
       // If the new segment starts a new planner block, initialize stepper variables and counters.
       // NOTE: When the segment data index changes, this indicates a new planner block.
@@ -492,25 +485,14 @@ void stepper_init()
   DIRECTION_DDR |= DIRECTION_MASK;
 
   // Configure Timer 1: Stepper Driver Interrupt
-  //TCCR1B &= ~(1<<WGM13); // waveform generation = 0100 = CTC
-  //TCCR1B |=  (1<<WGM12);
-  //TCCR1A &= ~((1<<WGM11) | (1<<WGM10)); 
-  //TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
-  
-  // *** Swap timer 1 with 2 *** compare interrupt operation
-  TCCR4B &= ~(1<<WGM43); // waveform generation = 0100 = CTC
-  TCCR4B |=  (1<<WGM42);
-  TCCR4A &= ~((1<<WGM41) | (1<<WGM40)); 
-  TCCR4A &= ~((1<<COM4A1) | (1<<COM4A0) | (1<<COM4B1) | (1<<COM4B0)); // Disconnect OC1 output
-  // In Clear Timer on Compare or CTC mode, 
-  //the OCR4A Register is used to manipulate the counter resolution.
-  //In CTC mode the counter is cleared to zero when the counter value (TCNT4-uses OCR4A value) matches the OCR4A. 
- // Normal port operation, OC4A/OC4B disconnected  
-  // *** end of the swap ***
+  TCCR1B &= ~(1<<WGM13); // waveform generation = 0100 = CTC
+  TCCR1B |=  (1<<WGM12);
+  TCCR1A &= ~((1<<WGM11) | (1<<WGM10)); 
+  TCCR1A &= ~((1<<COM1A1) | (1<<COM1A0) | (1<<COM1B1) | (1<<COM1B0)); // Disconnect OC1 output
   
   // Original code left commented here below - no change!
-  // TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Set in st_go_idle().
-  // TIMSK1 &= ~(1<<OCIE1A);  // Set in st_go_idle().
+   TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Set in st_go_idle().
+   TIMSK1 &= ~(1<<OCIE1A);  // Set in st_go_idle().
   
   // Configure Timer 0: Stepper Port Reset Interrupt
   TIMSK0 &= ~((1<<OCIE0B) | (1<<OCIE0A) | (1<<TOIE0)); // Disconnect OC0 outputs and OVF interrupt.
