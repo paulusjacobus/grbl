@@ -29,8 +29,8 @@
 // Swapped Timer1 and 2 in order to get 16 bits PWM rather than 8 bits PWM
 // Digital Pins - Timer
 // 5,6          - Timer0 used for stepper ISR
-// 9,10         - Timer1 used for Spindle PWM was stepper ISR
-// 3,11         - Timer2 used for stepper ISR was spindle PWM
+// 2            - Timer4 used for Spindle PWM, USART0 ->USART1
+// 3,11         - Timer1 used for stepper ISR
 
 #ifndef config_h
 #define config_h
