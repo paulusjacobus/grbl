@@ -83,18 +83,18 @@
 #ifdef VARIABLE_SPINDLE 
   #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN //Not used in K40
     // If enabled, spindle direction pin now used as spindle enable, while PWM remains on D11/D10.
-    #define SPINDLE_ENABLE_BIT    5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
+    #define SPINDLE_ENABLE_BIT    5  // PB5 Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
   #else
-    //#define SPINDLE_ENABLE_BIT    3  // Uno Digital Pin 11
-    #define SPINDLE_ENABLE_BIT    2  // Uno Digital Pin 10
+    #define SPINDLE_ENABLE_BIT    3  // PB3 Uno Digital Pin 11
+    //#define SPINDLE_ENABLE_BIT    2  // PB2 Uno Digital Pin 10
   #endif
 #else
-  #define SPINDLE_ENABLE_BIT    4  // Uno Digital Pin 12
+  #define SPINDLE_ENABLE_BIT    4  // PB4 Uno Digital Pin 12
 #endif
 #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
   #define SPINDLE_DIRECTION_DDR   DDRB
   #define SPINDLE_DIRECTION_PORT  PORTB
-  #define SPINDLE_DIRECTION_BIT   5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
+  #define SPINDLE_DIRECTION_BIT   5  // Uno Digital Pin 13 - PB5 (NOTE: D13 can't be pulled-high input due to LED.)
 #endif
   
 // Define flood and mist coolant enable output pins.
@@ -148,9 +148,7 @@
   #define WAVE3_REGISTER	 WGM43
       
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
-  #define SPINDLE_PWM_DDR	  DDRB
-  #define SPINDLE_PWM_PORT  PORTB
-  //#define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
-  // K40 conversion
-  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 10
+  #define SPINDLE_PWM_DDR	  DDRD
+  #define SPINDLE_PWM_PORT  PORTD
+  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 2 - PD2
 #endif // End of VARIABLE_SPINDLE
