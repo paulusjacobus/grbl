@@ -103,8 +103,9 @@ void spindle_set_state(uint8_t state, float rpm)
        #endif
        #ifdef CPU_MAP_ATMEGA328PB //uno plus
      	  TCCR4A = (TCCR4A & 0b11001100) | 0x20 |;//set Fast PWM4B=1 OCR4B Output
-        TCCR4B = (TCCR4B & 0b11100000) | 0x0a |;// set to 1/8 Prescaler  
-        OCR4A = 0x1FFF;
+        TCCR4B = (TCCR4B & 0b11100000) | 0x0A |;// set to 1/8 Prescaler  
+        TCCR4C = (TCCR4C & 0b00001111) | 0x00 |;//TBD
+        OCR4A = 0xFFFF;
         uint16_t current_pwm; 
        #else
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
