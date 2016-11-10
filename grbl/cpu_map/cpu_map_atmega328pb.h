@@ -31,8 +31,8 @@
 #define GRBL_PLATFORM "Atmega328pb"
 
 // Define serial port pins and interrupt vectors.
-#define SERIAL_RX     USART_RX_vect
-#define SERIAL_UDRE   USART_UDRE_vect
+#define SERIAL_RX     USART0_RX_vect
+#define SERIAL_UDRE   USART0_UDRE_vect
 
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
 #define STEP_DDR        DDRD
@@ -62,8 +62,8 @@
 #define LIMIT_PIN        PINB
 #define LIMIT_PORT       PORTB
 #define X_LIMIT_BIT      1  // Uno Digital Pin 9
-//#define Y_LIMIT_BIT      2  // Uno Digital Pin 10
-#define Y_LIMIT_BIT      3  // Uno Digital Pin 11
+#define Y_LIMIT_BIT      2  // Uno Digital Pin 10
+//#define Y_LIMIT_BIT      3  // Uno Digital Pin 11
 
 
 #ifdef VARIABLE_SPINDLE // Z Limit pin and spindle enabled swapped to access hardware PWM on Pin 11 and 10.  
@@ -135,10 +135,10 @@
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
 
-  #define PWM_MAX_VALUE    1023.0 
+  #define PWM_MAX_VALUE    4095.0 
   #define TCCRA_REGISTER	 TCCR4A
   #define TCCRB_REGISTER	 TCCR4B
-  #define OCR_REGISTER     OCR4B // Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
+  #define OCR_REGISTER     OCR4A // Top value Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
   //Timer 2 to timer 4 conversion. COM1A1 was set for Dig Pin 11 Channel A
   #define COMB_BIT	     COM4B1 //uses channel B dig pin 10 while channel A is dig pin 9
