@@ -135,13 +135,13 @@
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
 
-  #define PWM_MAX_VALUE    4095.0 
+  #define PWM_MAX_VALUE    653534.0 
   #define TCCRA_REGISTER	 TCCR4A
   #define TCCRB_REGISTER	 TCCR4B
   #define OCR_REGISTER     OCR4A // Top value Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
   //Timer 2 to timer 4 conversion. COM1A1 was set for Dig Pin 11 Channel A
-  #define COMB_BIT	     COM4B1 //uses channel B dig pin 10 while channel A is dig pin 9
+  #define COMB_BIT	     COM4A1 //uses channel B dig pin 10 while channel A is dig pin 9
   #define WAVE0_REGISTER	 WGM40
   #define WAVE1_REGISTER	 WGM41
   #define WAVE2_REGISTER	 WGM42
@@ -150,5 +150,5 @@
   // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
   #define SPINDLE_PWM_DDR	  DDRD
   #define SPINDLE_PWM_PORT  PORTD
-  #define SPINDLE_PWM_BIT	  2    // Uno Digital Pin 2 - PD2
+  #define SPINDLE_PWM_BIT	  1    // Uno Digital Pin 1 - PD1 OC4A
 #endif // End of VARIABLE_SPINDLE
