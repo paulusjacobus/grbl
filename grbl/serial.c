@@ -60,10 +60,10 @@ void serial_init()
   // Set baud rate
   #if BAUD_RATE < 57600
     uint16_t UBRR1_value = ((F_CPU / (8L * BAUD_RATE)) - 1)/2 ;
-    UCSR1A &= ~(1 << U2X0); // baud doubler off  - Only needed on Uno XXX
+    UCSR1A &= ~(1 << U2X1); // baud doubler off  - Only needed on Uno XXX
   #else
     uint16_t UBRR1_value = ((F_CPU / (4L * BAUD_RATE)) - 1)/2;
-    UCSR1A |= (1 << U2X0);  // baud doubler on for high baud rates, i.e. 115200
+    UCSR1A |= (1 << U2X1);  // baud doubler on for high baud rates, i.e. 115200
   #endif
   UBRR1H = UBRR1_value >> 8;
   UBRR1L = UBRR1_value;
