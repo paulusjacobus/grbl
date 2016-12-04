@@ -47,11 +47,8 @@ void spindle_stop()
 {
   // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
   #ifdef VARIABLE_SPINDLE
-  #if defined(CPU_MAP_ATMEGA328
-    TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero.
-  #else 
-    TCCRA_REGISTER &= ~(1<<COMA_BIT);
-  #endif
+    TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero. COMB_BIT refers to CPU MAP where set to
+  // COMA,B channels. Name COMB is a bit misleading, COMCHANNEL would be better
   #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
       #ifdef INVERT_SPINDLE_ENABLE_PIN
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
