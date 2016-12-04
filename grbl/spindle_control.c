@@ -47,8 +47,12 @@ void spindle_stop()
 {
   // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
   #ifdef VARIABLE_SPINDLE
+  #if defined(CPU_MAP_ATMEGA328
     TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero.
-    #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
+  #else 
+    TCCRA_REGISTER &= ~(1<<COMA_BIT);
+  #endif
+  #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
       #ifdef INVERT_SPINDLE_ENABLE_PIN
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
       #else
@@ -91,20 +95,10 @@ void spindle_set_state(uint8_t state, float rpm)
         uint16_t current_pwm;
       #endif
       
-      #ifdef CPU_MAP_ATMEGA32U4 //Leonardo
-      // 0C4A digital pin D13
-      	TCCR4A = (TCCR4A & 0b00111101) | 0xC2 |;//set Fast PWM4B=1 OCR4B Output
-        TCCR4B = (TCCR4B & 0b11110000) | 0x34 |;// set to 1/8 Prescaler
-        TCCR4C = (TCCR4C & 0b00001111) | 0xC0 |;//COM4A and B shadow registers
-        TCCR4D = (TCCR4D & 0b11111100) | 0x00 |;// WGM41 and WGM40 FastPWM
-        TCCR4E = (TCCR4E & 0b10111111) | 0x40 |;// Bit6 enhance PWM 11 bits
-        OCR4C = 0x3FFF; // set the topvalue 11bit value in PWM generator. OCR4C is top register
-        uint16_t current_pwm;       
-       #endif
-       #ifdef CPU_MAP_ATMEGA328PB //uno plus
-      	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+       #ifdef CPU_MAP_ATMEGA328PB //uno R4 Channel A -> COMA, PD1 port used OC4A 
+      	TCCRA_REGISTER = (1<<COMA_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
-        OCR4A = 0xFFFF; // set the top 16bit value in PWM generator
+        OCR4A = 0xFFFE; // set the top 16bit value in PWM generator
         uint16_t current_pwm;
       #endif
        #else
