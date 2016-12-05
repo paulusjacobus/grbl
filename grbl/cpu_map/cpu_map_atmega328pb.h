@@ -141,8 +141,8 @@
   #define OCR_REGISTER     OCR4A // Top value Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
   //Timer 2 to timer 4 conversion. COM1A1 was set for Dig Pin 11 Channel A
-  #define COMB0_BIT	     COM4A0 
-  #define COMB1_BIT	     COM4A1 //uses channel B dig pin 10 while channel A is dig pin 9
+ // #define COMB0_BIT	     COM4A0 
+  #define COMB_BIT	     COM4A1 //uses channel B dig pin 10 while channel A is dig pin 9
   #define WAVE0_REGISTER	 WGM40
   #define WAVE1_REGISTER	 WGM41
   #define WAVE2_REGISTER	 WGM42
