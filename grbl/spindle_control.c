@@ -102,7 +102,7 @@ void spindle_set_state(uint8_t state, float rpm)
       #endif
        #else
         TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
+        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) ; // set to 1/8 Prescaler
         uint8_t current_pwm;
       #endif
 
