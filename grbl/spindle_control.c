@@ -49,6 +49,8 @@ void spindle_stop()
   #ifdef VARIABLE_SPINDLE
     TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero. COMB_BIT refers to CPU MAP where set to
   // COMA,B channels. Name COMB is a bit misleading, COMPARECHANNEL would be better
+  // Since only one port is used, the other paired output port is assumed to be zero that why you can use one bit to disable the output
+  // ports thru setting one port!
   #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
       #ifdef INVERT_SPINDLE_ENABLE_PIN
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
