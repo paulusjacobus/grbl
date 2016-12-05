@@ -47,7 +47,7 @@ void spindle_stop()
 {
   // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
   #ifdef VARIABLE_SPINDLE
-    TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero. COMB_BIT refers to CPU MAP where set to
+    TCCRA_REGISTER &= ~((1<<COMB1_BIT) | (1<<COMB0_BIT)); // Disable PWM. Output voltage is zero. COMB_BIT refers to CPU MAP where set to
   // COMA,B channels. Name COMB is a bit misleading, COMCHANNEL would be better
   #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
       #ifdef INVERT_SPINDLE_ENABLE_PIN
@@ -86,20 +86,20 @@ void spindle_set_state(uint8_t state, float rpm)
     #ifdef VARIABLE_SPINDLE
       // TODO: Install the optional capability for frequency-based output for servos.
       #ifdef CPU_MAP_ATMEGA2560
-      	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+      	TCCRA_REGISTER = (1<<COMB1_BIT) | (1<<COMB0_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
         OCR4A = 0xFFFF; // set the top 16bit value in PWM generator
         uint16_t current_pwm;
       #endif
       
        #ifdef CPU_MAP_ATMEGA328PB //uno R4 Channel A -> COMA, PD1 port used OC4A 
-      	TCCRA_REGISTER = (1<<COMA_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+      	TCCRA_REGISTER = (1<<COMB1_BIT) | (1<<COMB0_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
         OCR4A = 0xFFFE; // set the top 16bit value in PWM generator
         uint16_t current_pwm;
       #endif
        #else
-        TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
+        TCCRA_REGISTER = (1<<COMB1_BIT) | (1<<COMB0_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
         TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02; // set to 1/8 Prescaler
         uint8_t current_pwm;
       #endif
