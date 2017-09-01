@@ -118,36 +118,48 @@ void spindle_set_state(uint8_t state, float rpm)
   //}
         // setting the PWM mode 4, 9 0r 15
     // switch (pwm_mode) {
+    //case 1:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 1 phase correct pwm 8 bit
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
+    //  break;
+    //case 2:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 2 phase correct pwm 9 bit
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
+    //  break;
+    //case 3:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 3 phase correct pwm 10 bit
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
+    //  break;     
     //case 4:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x00; // mode 4
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x00; // mode 4 CTC, no buffering
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
     //  break;
     //case 5:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 5
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 5 fast pwm 8 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
     //  break;
     //case 6:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 6
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 6 fast pwm 9 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
     //  break;
     //case 7:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 7
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 7 fast pwm 10 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
     //  break;    
     //case 9:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 9
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 9 Phase&freq correct pwm 16 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
     //  break;
     //case 11:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 11
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 11 phase correct pwm 16 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
     //  break;    
     //case 15:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15 fast pwm 16 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
     //  break;
     //default:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15 fast pwm 16 bit
     // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
   //}
       	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
