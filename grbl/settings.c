@@ -70,7 +70,9 @@ void settings_restore(uint8_t restore_flag) {
 	settings.homing_seek_rate = DEFAULT_HOMING_SEEK_RATE;
 	settings.homing_debounce_delay = DEFAULT_HOMING_DEBOUNCE_DELAY;
 	settings.homing_pulloff = DEFAULT_HOMING_PULLOFF;
-
+	//settings.pwm_mode = DEFAULT_PWM_MODE;
+	//settings.pwm_prescaler = DEFAULT_PWM_PRESCALER;
+	  
 	settings.flags = 0;
 	if (DEFAULT_REPORT_INCHES) { settings.flags |= BITFLAG_REPORT_INCHES; }
 	if (DEFAULT_INVERT_ST_ENABLE) { settings.flags |= BITFLAG_INVERT_ST_ENABLE; }
@@ -265,6 +267,8 @@ uint8_t settings_store_global_setting(uint8_t parameter, float value) {
       case 25: settings.homing_seek_rate = value; break;
       case 26: settings.homing_debounce_delay = int_value; break;
       case 27: settings.homing_pulloff = value; break;
+      //case 28: settings.pwm_mode = value; break;
+      //case 29: settings.pwm_prescaler = value; break;
       default: 
         return(STATUS_INVALID_STATEMENT);
     }
