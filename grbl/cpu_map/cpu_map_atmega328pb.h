@@ -135,15 +135,15 @@
 #ifdef VARIABLE_SPINDLE
   // Advanced Configuration Below You should not need to touch these variables
 
-  #define PWM_MAX_VALUE    653534.0 
-  #define TCCRA_REGISTER	 TCCR4A
-  #define TCCRB_REGISTER	 TCCR4B
+  #define PWM_MAX_VALUE    653534.0 // True 16 Bits pwm not 8 bits...
+  #define TCCRA_REGISTER	 TCCR4A // This is the register for setting the PWM mode together with TCCRB
+  #define TCCRB_REGISTER	 TCCR4B // Register for PWM mode and timer prescaler i.e. pwm frequency!
   #define OCR_REGISTER     OCR4A // Top value Use Channel B for PWM output! PWM Channel B is tied to Dig Pin 10
   
   //Timer 2 to timer 4 conversion. COM1A1 was set for Dig Pin 11 Channel A
  // #define COMB0_BIT	     COM4A0 
   #define COMB_BIT	     COM4A1 //uses channel B dig pin 10 while channel A is dig pin 9
-  #define WAVE0_REGISTER	 WGM40
+  #define WAVE0_REGISTER	 WGM40 // the Wave bitposition of the TRRCA and B registers to set the PWM modes
   #define WAVE1_REGISTER	 WGM41
   #define WAVE2_REGISTER	 WGM42
   #define WAVE3_REGISTER	 WGM43
