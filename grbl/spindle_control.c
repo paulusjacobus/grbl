@@ -95,8 +95,65 @@ void spindle_set_state(uint8_t state, float rpm)
       #endif
       
        #ifdef CPU_MAP_ATMEGA328PB //uno R4 Channel A -> COMA, PD1 port used OC4A 
+    // 
+    //  uint8_t prescaler;
+    // switch (pwm_prescaler) {
+    //case 1:
+    // prescaler = 0x01; // no prescaler 16MHz
+    //  break;
+    //case 2:
+    // prescaler = 0x02; //1/8 prescaler 2MHz
+    //  break;
+    //case 3:
+    // prescaler = 0x03; //1/64 prescaler 250kHz
+    //  break;
+    //case 4:
+    // prescaler = 0x04; // 1/256 prescaler 62,5kHz
+    //  break;
+    //case 5:
+    // prescaler = 0x05; // 1/1024 prescaler 15,625kHz
+    //  break;    
+    //default:
+    // prescaler = 0x02;
+  //}
+        // setting the PWM mode 4, 9 0r 15
+    // switch (pwm_mode) {
+    //case 4:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x00; // mode 4
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
+    //  break;
+    //case 5:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 5
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
+    //  break;
+    //case 6:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 6
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
+    //  break;
+    //case 7:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 7
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
+    //  break;    
+    //case 9:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 9
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
+    //  break;
+    //case 11:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 11
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
+    //  break;    
+    //case 15:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
+    //  break;
+    //default:
+    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15
+    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
+  //}
       	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
+      	//TCCRA_REGISTER = (1<<COMB_BIT) ;    
+        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
+        //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | prescaler ;// set to 1/8 Prescaler
         OCR4A = 0xFFFE; // set the top 16bit value in PWM generator
         uint16_t current_pwm;
       #endif
