@@ -99,19 +99,19 @@ void spindle_set_state(uint8_t state, float rpm)
     //  uint8_t prescaler;
     // switch (pwm_prescaler) {
     //case 1:
-    // prescaler = 0x01; // no prescaler 16MHz
+    // prescaler = 0x01; // no prescaler 1MHz
     //  break;
     //case 2:
-    // prescaler = 0x02; //1/8 prescaler 2MHz
+    // prescaler = 0x02; //1/8 prescaler 125kHz
     //  break;
     //case 3:
-    // prescaler = 0x03; //1/64 prescaler 250kHz
+    // prescaler = 0x03; //1/64 prescaler 15,625kHz
     //  break;
     //case 4:
-    // prescaler = 0x04; // 1/256 prescaler 62,5kHz
+    // prescaler = 0x04; // 1/256 prescaler 3,9kHz
     //  break;
     //case 5:
-    // prescaler = 0x05; // 1/1024 prescaler 15,625kHz
+    // prescaler = 0x05; // 1/1024 prescaler 1kHz
     //  break;    
     //default:
     // prescaler = 0x02;
