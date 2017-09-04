@@ -26,4 +26,4 @@ Grbl includes full acceleration management with look ahead. That means the contr
 
 * [Licensing](https://github.com/grbl/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 
-* For more information and help, check out our **[Wiki pages!](https://github.com/grbl/grbl
+* For more information and help, check out our **[Wiki pages!](https://github.com/gnea/grbl/wiki
