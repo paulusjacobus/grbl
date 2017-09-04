@@ -1,0 +1,16 @@
+CFD = CFD_ENABLED
+BODLEVEL = DISABLED
+RSTDISBL = [ ]
+DWEN = [ ]
+SPIEN = [X]
+WDTON = [ ]
+EESAVE = [ ]
+BOOTSZ = 256W_3F00
+BOOTRST = [ ]
+CKDIV8 = [ ]
+CKOUT = [ ]
+SUT_CKSEL = EXTCLK_6CK_14CK_65MS
+
+EXTENDED = 0xFF (valid)
+HIGH = 0xDF (valid)
+LOW = 0xE0 (valid)

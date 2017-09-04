@@ -2,7 +2,7 @@
   spindle_control.c - spindle control methods
   Part of Grbl
 
-  Copyright (c) 2012-2015 Sungeun K. Jeon
+  Copyright (c) 2012-2016 Sungeun K. Jeon for Gnea Research LLC
   Copyright (c) 2009-2011 Simen Svale Skogsrud
 
   Grbl is free software: you can redistribute it and/or modify
@@ -22,36 +22,91 @@
 #include "grbl.h"
 
 
-void spindle_init()
-{    
-  // Configure variable spindle PWM and enable pin, if requried. On the Uno, PWM and enable are
-  // combined unless configured otherwise.
+#ifdef VARIABLE_SPINDLE
+  static float pwm_gradient; // Precalulated value to speed up rpm to PWM conversions.
+#endif
+
+
+void spindle_init(uint8_t pwm_mode)
+{
   #ifdef VARIABLE_SPINDLE
+
+    // Configure variable spindle PWM and enable pin, if requried. On the Uno, PWM and enable are
+    // combined unless configured otherwise.
     SPINDLE_PWM_DDR |= (1<<SPINDLE_PWM_BIT); // Configure as PWM output pin.
-    #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
+    SPINDLE_TCCRA_REGISTER = SPINDLE_TCCRA_INIT_MASK; // Configure PWM output compare timer
+	switch (pwm_mode) {
+		case 0: 
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_A; //default setting medium freq 244
+			break;
+		case 1:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_B; //dither mode low freq 61Hz
+			break;
+		case 2:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_C; //smooth high freq 1.9kHz
+		case 3:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_D; //ultra smooth highest freq 15kHz
+		default:
+			break;
+	}
+    #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
       SPINDLE_ENABLE_DDR |= (1<<SPINDLE_ENABLE_BIT); // Configure as output pin.
-    #endif     
-  // Configure no variable spindle and only enable pin.
-  #else  
+    #else
+      SPINDLE_DIRECTION_DDR |= (1<<SPINDLE_DIRECTION_BIT); // Configure as output pin.
+    #endif
+
+    pwm_gradient = SPINDLE_PWM_RANGE/(settings.rpm_max-settings.rpm_min);
+
+  #else
+
+    // Configure no variable spindle and only enable pin.
     SPINDLE_ENABLE_DDR |= (1<<SPINDLE_ENABLE_BIT); // Configure as output pin.
-  #endif
-  
-  #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
     SPINDLE_DIRECTION_DDR |= (1<<SPINDLE_DIRECTION_BIT); // Configure as output pin.
+
   #endif
+
   spindle_stop();
 }
 
 
+uint8_t spindle_get_state()
+{
+	#ifdef VARIABLE_SPINDLE
+    #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
+		  // No spindle direction output pin. 
+			#ifdef INVERT_SPINDLE_ENABLE_PIN
+			  if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) { return(SPINDLE_STATE_CW); }
+	    #else
+	 			if (bit_istrue(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) { return(SPINDLE_STATE_CW); }
+	    #endif
+    #else
+      if (SPINDLE_TCCRA_REGISTER & (1<<SPINDLE_COMB_BIT)) { // Check if PWM is enabled.
+        if (SPINDLE_DIRECTION_PORT & (1<<SPINDLE_DIRECTION_BIT)) { return(SPINDLE_STATE_CCW); }
+        else { return(SPINDLE_STATE_CW); }
+      }
+    #endif
+	#else
+		#ifdef INVERT_SPINDLE_ENABLE_PIN
+		  if (bit_isfalse(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) { 
+		#else
+		  if (bit_istrue(SPINDLE_ENABLE_PORT,(1<<SPINDLE_ENABLE_BIT))) {
+		#endif
+      if (SPINDLE_DIRECTION_PORT & (1<<SPINDLE_DIRECTION_BIT)) { return(SPINDLE_STATE_CCW); }
+      else { return(SPINDLE_STATE_CW); }
+    }
+	#endif
+	return(SPINDLE_STATE_DISABLE);
+}
+
+
+// Disables the spindle and sets PWM output to zero when PWM variable spindle speed is enabled.
+// Called by various main program and ISR routines. Keep routine small, fast, and efficient.
+// Called by spindle_init(), spindle_set_speed(), spindle_set_state(), and mc_reset().
 void spindle_stop()
 {
-  // On the Uno, spindle enable and PWM are shared. Other CPUs have seperate enable pin.
   #ifdef VARIABLE_SPINDLE
-    TCCRA_REGISTER &= ~(1<<COMB_BIT); // Disable PWM. Output voltage is zero. COMB_BIT refers to CPU MAP where set to
-  // COMA,B channels. Name COMB is a bit misleading, COMPARECHANNEL would be better
-  // Since only one port is used, the other paired output port is assumed to be zero that why you can use one bit to disable the output
-  // ports thru setting one port!
-  #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
+    SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
+    #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
       #ifdef INVERT_SPINDLE_ENABLE_PIN
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);  // Set pin to high
       #else
@@ -64,19 +119,80 @@ void spindle_stop()
     #else
       SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
     #endif
-  #endif  
+  #endif
 }
 
 
-void spindle_set_state(uint8_t state, float rpm)
+#ifdef VARIABLE_SPINDLE
+  // Sets spindle speed PWM output and enable pin, if configured. Called by spindle_set_state()
+  // and stepper ISR. Keep routine small and efficient.
+  void spindle_set_speed(uint16_t pwm_value)
+  {
+    if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
+      spindle_stop();
+    } else {
+      SPINDLE_OCR_REGISTER = pwm_value; // Set PWM output level.
+      SPINDLE_TCCRA_REGISTER |= (1<<SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
+
+      #if defined(USE_SPINDLE_DIR_AS_ENABLE_PIN)
+        #ifdef INVERT_SPINDLE_ENABLE_PIN
+          SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
+        #else
+          SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
+        #endif
+      #endif
+    }
+  }
+
+
+  // Called by spindle_set_state() and step segment generator. Keep routine small and efficient.
+  uint16_t spindle_compute_pwm_value(float rpm) // 328p PWM register is 8-bit. 328pb is 16 bit
+  {
+    uint16_t pwm_value;
+    rpm *= (0.010*sys.spindle_speed_ovr); // Scale by spindle speed override value.
+    // Calculate PWM register value based on rpm max/min settings and programmed rpm.
+    if ((settings.rpm_min >= settings.rpm_max) || (rpm >= settings.rpm_max)) {
+      // No PWM range possible. Set simple on/off spindle control pin state.
+      sys.spindle_speed = settings.rpm_max;
+      pwm_value = SPINDLE_PWM_MAX_VALUE;
+    } else if (rpm <= settings.rpm_min) {
+      if (rpm == 0.0) { // S0 disables spindle
+        sys.spindle_speed = 0.0;
+        pwm_value = SPINDLE_PWM_OFF_VALUE;
+      } else { // Set minimum PWM output
+        sys.spindle_speed = settings.rpm_min;
+        pwm_value = SPINDLE_PWM_MIN_VALUE;
+      }
+    } else { 
+      // Compute intermediate PWM value with linear spindle speed model.
+      // NOTE: A nonlinear model could be installed here, if required, but keep it VERY light-weight.
+      sys.spindle_speed = rpm;
+      pwm_value = floor((rpm-settings.rpm_min)*pwm_gradient) + SPINDLE_PWM_MIN_VALUE;
+    }
+    return(pwm_value);
+  }
+#endif
+
+
+// Immediately sets spindle running state with direction and spindle rpm via PWM, if enabled.
+// Called by g-code parser spindle_sync(), parking retract and restore, g-code program end,
+// sleep, and spindle stop override.
+#ifdef VARIABLE_SPINDLE
+  void spindle_set_state(uint8_t state, float rpm)
+#else
+  void _spindle_set_state(uint8_t state)
+#endif
 {
-  // Halt or set spindle direction and rpm. 
-  if (state == SPINDLE_DISABLE) {
-
+  if (sys.abort) { return; } // Block during abort.
+  if (state == SPINDLE_DISABLE) { // Halt or set spindle direction and rpm.
+  
+    #ifdef VARIABLE_SPINDLE
+      sys.spindle_speed = 0.0;
+    #endif
     spindle_stop();
-
+  
   } else {
-
+  
     #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
       if (state == SPINDLE_ENABLE_CW) {
         SPINDLE_DIRECTION_PORT &= ~(1<<SPINDLE_DIRECTION_BIT);
@@ -84,138 +200,43 @@ void spindle_set_state(uint8_t state, float rpm)
         SPINDLE_DIRECTION_PORT |= (1<<SPINDLE_DIRECTION_BIT);
       }
     #endif
-
+  
     #ifdef VARIABLE_SPINDLE
-      // TODO: Install the optional capability for frequency-based output for servos.
-      #ifdef CPU_MAP_ATMEGA2560
-      	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
-        OCR4A = 0xFFFF; // set the top 16bit value in PWM generator
-        uint16_t current_pwm;
-      #endif
-      
-       #ifdef CPU_MAP_ATMEGA328PB //uno R4 Channel A -> COMA, PD1 port used OC4A 
-    // 
-    //  uint8_t prescaler;
-    // switch (pwm_prescaler) {
-    //case 1:
-    // prescaler = 0x01; // no prescaler 1MHz
-    //  break;
-    //case 2:
-    // prescaler = 0x02; //1/8 prescaler 125kHz
-    //  break;
-    //case 3:
-    // prescaler = 0x03; //1/64 prescaler 15,625kHz
-    //  break;
-    //case 4:
-    // prescaler = 0x04; // 1/256 prescaler 3,9kHz
-    //  break;
-    //case 5:
-    // prescaler = 0x05; // 1/1024 prescaler 1kHz
-    //  break;    
-    //default:
-    // prescaler = 0x02;
-  //}
-        // setting the PWM mode 4, 9 0r 15
-    // switch (pwm_mode) {
-    //case 1:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 1 phase correct pwm 8 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
-    //  break;
-    //case 2:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 2 phase correct pwm 9 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
-    //  break;
-    //case 3:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 3 phase correct pwm 10 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x00;
-    //  break;     
-    //case 4:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x00; // mode 4 CTC, no buffering
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
-    //  break;
-    //case 5:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 5 fast pwm 8 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
-    //  break;
-    //case 6:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x02; // mode 6 fast pwm 9 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
-    //  break;
-    //case 7:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 7 fast pwm 10 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x08;
-    //  break;    
-    //case 9:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x01; // mode 9 Phase&freq correct pwm 16 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
-    //  break;
-    //case 11:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 11 phase correct pwm 16 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x10;
-    //  break;    
-    //case 15:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15 fast pwm 16 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
-    //  break;
-    //default:
-    // TCCRA_REGISTER = (TCCRA_REGISTER & 0b11111100) | 0x03; // mode 15 fast pwm 16 bit
-    // TCCRB_REGISTER = (TCCRB_REGISTER & 0b11100111) | 0x18;
-  //}
-      	TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-      	//TCCRA_REGISTER = (1<<COMB_BIT) ;    
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER)  | (1<<WAVE3_REGISTER);// set to 1/8 Prescaler
-        //TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | prescaler ;// set to 1/8 Prescaler
-        OCR4A = 0xFFFE; // set the top 16bit value in PWM generator
-        uint16_t current_pwm;
-      #endif
-       #else
-        TCCRA_REGISTER = (1<<COMB_BIT) | (1<<WAVE1_REGISTER) | (1<<WAVE0_REGISTER);
-        TCCRB_REGISTER = (TCCRB_REGISTER & 0b11111000) | 0x02 | (1<<WAVE2_REGISTER) ; // set to 1/8 Prescaler
-        uint8_t current_pwm;
-      #endif
-
-      if (rpm <= 0.0) { spindle_stop(); } // RPM should never be negative, but check anyway.
-      else {
-        #define SPINDLE_RPM_RANGE (SPINDLE_MAX_RPM-SPINDLE_MIN_RPM)
-        if ( rpm < SPINDLE_MIN_RPM ) { rpm = 0; } 
-        else { 
-          rpm -= SPINDLE_MIN_RPM; 
-          if ( rpm > SPINDLE_RPM_RANGE ) { rpm = SPINDLE_RPM_RANGE; } // Prevent integer overflow
-        }
-        current_pwm = floor( rpm*(PWM_MAX_VALUE/SPINDLE_RPM_RANGE) + 0.5);
-        #ifdef MINIMUM_SPINDLE_PWM
-          if (current_pwm < MINIMUM_SPINDLE_PWM) { current_pwm = MINIMUM_SPINDLE_PWM; }
-        #endif
-        OCR_REGISTER = current_pwm; // Set PWM pin output. Don't confuse with the use of the OCRnA register for the Top value
-    
-        // On the Uno, spindle enable and PWM are shared, unless otherwise specified.
-        #if defined(CPU_MAP_ATMEGA2560) || defined(USE_SPINDLE_DIR_AS_ENABLE_PIN) 
-          #ifdef INVERT_SPINDLE_ENABLE_PIN
-            SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
-          #else
-            SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
-          #endif
-        #endif
+      // NOTE: Assumes all calls to this function is when Grbl is not moving or must remain off.
+      if (settings.flags & BITFLAG_LASER_MODE) { 
+        if (state == SPINDLE_ENABLE_CCW) { rpm = 0.0; } // TODO: May need to be rpm_min*(100/MAX_SPINDLE_SPEED_OVERRIDE);
       }
-      
+      spindle_set_speed(spindle_compute_pwm_value(rpm));
     #else
       // NOTE: Without variable spindle, the enable bit should just turn on or off, regardless
-      // if the spindle speed value is zero, as its ignored anyhow.      
+      // if the spindle speed value is zero, as its ignored anyhow.
       #ifdef INVERT_SPINDLE_ENABLE_PIN
         SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT);
       #else
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
-      #endif
+      #endif    
     #endif
-
+  
   }
+  
+  sys.report_ovr_counter = 0; // Set to report change immediately
 }
 
 
-void spindle_run(uint8_t state, float rpm)
-{
-  if (sys.state == STATE_CHECK_MODE) { return; }
-  protocol_buffer_synchronize(); // Empty planner buffer to ensure spindle is set when programmed.  
-  spindle_set_state(state, rpm);
-}
+// G-code parser entry-point for setting spindle state. Forces a planner buffer sync and bails 
+// if an abort or check-mode is active.
+#ifdef VARIABLE_SPINDLE
+  void spindle_sync(uint8_t state, float rpm)
+  {
+    if (sys.state == STATE_CHECK_MODE) { return; }
+    protocol_buffer_synchronize(); // Empty planner buffer to ensure spindle is set when programmed.
+    spindle_set_state(state,rpm);
+  }
+#else
+  void _spindle_sync(uint8_t state)
+  {
+    if (sys.state == STATE_CHECK_MODE) { return; }
+    protocol_buffer_synchronize(); // Empty planner buffer to ensure spindle is set when programmed.
+    _spindle_set_state(state);
+  }
+#endif
