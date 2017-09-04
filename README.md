@@ -22,6 +22,9 @@ Gerbil has a specific command to select the pwm mode $28:
 
 Engraving speed between 700 and 1200mm/min gives the best results. Above these speeds, the pwm is too slow to keep up with the engraving.
 
+grbl/doc contains the inkscape engraving and cutter plugins (just drop the .py and .inx in inkscape/share/extensions folder on your MAC or PC)
+grbl/doc/script contains a simple streamer script 'stream.py' to stream big files to Gerbil.
+
 Grbl includes full acceleration management with look ahead. That means the controller will look up to 18 motions into the future and plan its velocities ahead to deliver smooth acceleration and jerk-free cornering.
 
 * [Licensing](https://github.com/grbl/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
