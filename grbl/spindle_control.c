@@ -57,9 +57,6 @@ void spindle_init(uint8_t pwm_mode)
 		case 6:
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_G; //default setting medium freq 1.9k
 			break;
-		case 7:
-			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_H; //default setting medium freq 15k
-			break;
 		default:
 			break;
 	}
