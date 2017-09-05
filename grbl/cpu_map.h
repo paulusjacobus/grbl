@@ -260,7 +260,7 @@
   #define SPINDLE_OCR_REGISTER      OCR4A
   #define SPINDLE_COMB_BIT	        COM4A1
 
-  // Prescaled, 10-bit Phase correct PWM mode.
+  // Prescaled, 10-bit fast PWM mode.
   #define SPINDLE_TCCRA_INIT_MASK_1    ((1<<WGM41)|(1<<WGM40))// Configures phase correct PWM mode.((1<<WGM41)|(1<<WGM40))
   
   #define SPINDLE_TCCRB_INIT_MASK_D ((1<<WGM42) | (1<<CS40))               // 1 Disable prescaler -> 15kHz
@@ -268,11 +268,10 @@
   #define SPINDLE_TCCRB_INIT_MASK_A ((1<<WGM42) | (1<<CS41) | (1<<CS40))   // 1/64 prescaler -> 244Hz (best working)
   #define SPINDLE_TCCRB_INIT_MASK_B ((1<<WGM42) | (1<<CS42))               // 1/256 prescaler -> 61Hz 
 //#define SPINDLE_TCCRB_INIT_MASK   ((1<<CS42) | (1<<CS40)) // 1/1024 prescaler -> 15Hz not feasible
-
-  #define SPINDLE_TCCRB_INIT_MASK_E (1<<CS40)               // 1 Disable prescaler -> 15kHz
-  #define SPINDLE_TCCRB_INIT_MASK_F (1<<CS41)               // 1/8 prescaler -> 1.953kHz (reduced gray)
-  #define SPINDLE_TCCRB_INIT_MASK_G ((1<<CS41) | (1<<CS40))   // 1/64 prescaler -> 244Hz (best working)
-  #define SPINDLE_TCCRB_INIT_MASK_H (1<<CS42)               // 1/256 prescaler -> 61Hz 
+// phase correct pwm
+  #define SPINDLE_TCCRB_INIT_MASK_G (1<<CS40)               // 1 Disable prescaler -> 7.5kHz
+  #define SPINDLE_TCCRB_INIT_MASK_F (1<<CS41)               // 1/8 prescaler -> 1kHz (reduced gray)
+  #define SPINDLE_TCCRB_INIT_MASK_E ((1<<CS41) | (1<<CS40))   // 1/64 prescaler -> 122Hz (best working)
 
   // NOTE: On the 328pb, these must be the same as the SPINDLE_ENABLE settings.
   #define SPINDLE_PWM_DDR	  DDRD
