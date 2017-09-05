@@ -37,7 +37,7 @@ void spindle_init(uint8_t pwm_mode)
     SPINDLE_TCCRA_REGISTER = SPINDLE_TCCRA_INIT_MASK; // Configure PWM output compare timer
 	switch (pwm_mode) {
 		case 0: 
-			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_A; //default setting medium freq 244
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_A; //default setting medium freq 244Hz
 			break;
 		case 1:
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_B; //dither mode low freq 61Hz
@@ -49,13 +49,13 @@ void spindle_init(uint8_t pwm_mode)
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_D; //ultra smooth highest freq 15kHz
 			break;
 		case 4:
-			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_E; //default setting medium freq 244
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_E; //default setting medium freq 122Hz
 			break;	
 		case 5:
-			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_F; //default setting medium freq 61
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_F; //default setting medium freq 1kHz
 			break;
 		case 6:
-			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_G; //default setting medium freq 1.9k
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_G; //default setting medium freq 7.5kHz
 			break;
 		default:
 			break;
