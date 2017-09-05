@@ -44,8 +44,22 @@ void spindle_init(uint8_t pwm_mode)
 			break;
 		case 2:
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_C; //smooth high freq 1.9kHz
+			break;
 		case 3:
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_D; //ultra smooth highest freq 15kHz
+			break;
+		case 4:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_E; //default setting medium freq 244
+			break;	
+		case 5:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_F; //default setting medium freq 61
+			break;
+		case 6:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_G; //default setting medium freq 1.9k
+			break;
+		case 7:
+			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_H; //default setting medium freq 15k
+			break;
 		default:
 			break;
 	}
