@@ -16,9 +16,12 @@ Gerbil specific: The code has been optimised to run CO2 tube type lasers which r
 
 Gerbil has a specific command to select the pwm mode $28:
 - 0 default mode: 244 Hz (best for CO2 tubes high voltage driven gas)
-- 1 low resolution mode: 61 Hz
-- 2 high resolution mode: 1.9kHz
-- 3 highest resolution mode: 15kHz (synrad rf excited lasers etc)
+- 1 low resolution mode: 61 Hz fast pwm
+- 2 high resolution mode: 1.9kHz fast pwm
+- 3 highest resolution mode: 15kHz (synrad rf excited lasers etc) fast pwm
+- 4 122 Hz phase and freq correct pwm
+- 5 1kHz phase and freq correct pwm
+- 6 7.5kHz phase and freq correct pwm
 
 Engraving speed between 700 and 1200mm/min gives the best results. Above these speeds, the pwm is too slow to keep up with the engraving.
 
