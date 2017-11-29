@@ -1,4 +1,4 @@
-![GitHub Logo](https://github.com/paulusjacobus/doc/media/Grbl%20Logo/Grbl%20Logo%20250px.png?raw=true)
+![GitHub Logo](https://github.com/paulusjacobus/grbl/blob/master/doc/media/Grbl%20Logo%20150px.png?raw=true)
 
 ***
 
