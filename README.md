@@ -3,9 +3,9 @@
 
 ***
 
-Grbl is a no-compromise, high performance, low cost alternative to parallel-port-based motion control for CNC milling. It will run on a vanilla Arduino (Duemillanove/Uno) as long as it sports an Atmega 328. 
+The orginal Grbl code is a no-compromise, high performance, low cost alternative to parallel-port-based motion control for CNC milling. It will run on a vanilla Arduino (Duemillanove/Uno) as long as it sports an Atmega 328. 
 
-This project is to port the Uno code to other Arduino boards like the Leonardo, PRIMO and the Gerbil K40 Controller which hosts a 328PB-AU.
+This project is to port the Uno code to other Arduino boards like the Leonardo, PRIMO and the Gerbil K40 Controller which hosts an ATmega328PB-AU.
 The main purpose is to use these boards is to drive robots and in my case the K40 chinese laser cutter so it can use g code based open software like inkscape.
 
 The controller is written in highly optimized C utilizing every clever feature of the AVR-chips to achieve precise timing and asynchronous operation. It is able to maintain up to 30kHz of stable, jitter free control pulses.
@@ -25,11 +25,11 @@ Gerbil has a specific command to select the pwm mode $28:
 
 Engraving speed between 700 and 1200mm/min gives the best results. Above these speeds, the pwm is too slow to keep up with the engraving.
 
-grbl/doc contains the inkscape engraving and cutter plugins (just drop the .py and .inx in inkscape/share/extensions folder on your MAC or PC)
+grbl/doc contains the inkscape engraving and cutter plugins (just drop the .py and .inx in inkscape/share/extensions folder on your MAC or PC) These plugins are maintained and further developed at https://github.com/paulusjacobus/Gerbil
 grbl/doc/script contains a simple streamer script 'stream.py' to stream big files to Gerbil.
 
 Grbl includes full acceleration management with look ahead. That means the controller will look up to 18 motions into the future and plan its velocities ahead to deliver smooth acceleration and jerk-free cornering.
 
 * [Licensing](https://github.com/grbl/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 
-* For more information and help, check out our **[Wiki pages!](https://github.com/gnea/grbl/wiki
+* For more information and help, check out our **[Wiki pages!](https://github.com/paulusjacobus/grbl/wiki
