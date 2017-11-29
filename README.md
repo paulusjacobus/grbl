@@ -1,5 +1,4 @@
-![GitHub Logo](/doc/media/Grbl Logo 250px.png)
-
+![GitHub Logo](https://github.com/paulusjacobus/doc/media/Grbl%20Logo/Grbl%20Logo%20250px.png?raw=true)
 
 ***
 
