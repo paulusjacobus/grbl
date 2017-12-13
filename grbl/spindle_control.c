@@ -34,7 +34,7 @@ void spindle_init(uint8_t pwm_mode)
     // Configure variable spindle PWM and enable pin, if requried. On the Uno, PWM and enable are
     // combined unless configured otherwise.
     SPINDLE_PWM_DDR |= (1<<SPINDLE_PWM_BIT); // Configure as PWM output pin.
-    SPINDLE_TCCRA_REGISTER = SPINDLE_TCCRA_INIT_MASK; // Configure PWM output compare timer
+    SPINDLE_TCCRA_REGISTER = SPINDLE_TCCRA_INIT_MASK_1; // Configure PWM output compare timer
 	switch (pwm_mode) {
 		case 0: 
 			SPINDLE_TCCRB_REGISTER = SPINDLE_TCCRB_INIT_MASK_A; //default setting medium freq 244Hz
