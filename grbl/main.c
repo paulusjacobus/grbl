@@ -39,7 +39,8 @@ int main(void)
   // Initialize system state.
   #ifdef FORCE_INITIALIZATION_ALARM
     // Force Grbl into an ALARM state upon a power-cycle or hard reset.
-    sys.state = STATE_ALARM;
+    sys.state = STATE_IDLE;
+    //sys.state = STATE_ALARM;
   #else
     sys.state = STATE_IDLE;
   #endif
@@ -52,7 +53,8 @@ int main(void)
   // not after disabling the alarm locks. Prevents motion startup blocks from crashing into
   // things uncontrollably. Very bad.
   #ifdef HOMING_INIT_LOCK
-    if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_ALARM; }
+    if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_IDLE; }
+    //if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_ALARM; }
   #endif
 
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
